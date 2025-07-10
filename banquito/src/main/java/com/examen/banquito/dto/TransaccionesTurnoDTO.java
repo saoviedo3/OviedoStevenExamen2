@@ -13,6 +13,9 @@ import java.util.List;
 @Schema(description = "DTO para la gestión de transacciones de turno")
 public class TransaccionesTurnoDTO {
 
+    @Schema(description = "ID se genera auntomaticamente", example = "5fdf9c4b5f5b5f5b5f5b5f5b")
+    private String id; 
+
     @Schema(description = "Código del turno asociado", example = "CAJ01-USU01-20250709")
     private String codigoTurno;
 

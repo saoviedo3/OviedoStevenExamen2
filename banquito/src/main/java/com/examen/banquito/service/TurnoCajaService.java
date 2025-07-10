@@ -17,6 +17,7 @@ import com.examen.banquito.repository.TurnosCajaRepository;
 import com.examen.banquito.repository.TransaccionesTurnoRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TurnoCajaService {
@@ -55,12 +56,13 @@ public class TurnoCajaService {
     @Transactional
     public TransaccionesTurnoDTO procesarTransaccion(TransaccionesTurnoDTO transaccionesTurnoDTO) {
         try {
-            // Crear transacción
+            // Crear la transacción
             TransaccionesTurno transaccion = transaccionesTurnoMapper.toModel(transaccionesTurnoDTO);
             transaccionesTurnoRepository.save(transaccion);
             return transaccionesTurnoMapper.toDTO(transaccion);
         } catch (Exception e) {
-            throw new CreateEntityException("TransaccionesTurno", "Error al procesar la transacción. Detalle: " + e.getMessage());
+            throw new CreateEntityException("TransaccionesTurno",
+                    "Error al procesar la transacción. Detalle: " + e.getMessage());
         }
     }
 
@@ -68,24 +70,23 @@ public class TurnoCajaService {
     @Transactional
     public TurnoCajaDTO cerrarTurno(String codigoTurno, TurnoCajaDTO turnoCajaDTO) {
         try {
-            // Buscar el turno
             TurnosCaja turnoCaja = turnosCajaRepository.findById(codigoTurno)
                     .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con código=" + codigoTurno));
 
-            // Validar el monto final con las transacciones realizadas
-            BigDecimal montoTotalTransacciones = transaccionesTurnoRepository.findByCodigoTurno(codigoTurno)
-                    .stream()
+            List<TransaccionesTurno> transacciones = transaccionesTurnoRepository.findByCodigoTurno(codigoTurno);
+
+            BigDecimal montoTotalTransacciones = transacciones.stream()
                     .map(TransaccionesTurno::getMontoTotal)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            // Comparar monto final con las transacciones
-            if (!montoTotalTransacciones.equals(turnoCajaDTO.getMontoInicial())) {
-                throw new UpdateEntityException("TurnoCaja", "El monto final no coincide con las transacciones realizadas.");
+            if (!turnoCaja.getMontoInicial().equals(montoTotalTransacciones)) {
+                throw new UpdateEntityException("TurnoCaja",
+                        "El monto total de las transacciones no coincide con el monto inicial.");
             }
 
-            // Actualizar estado del turno a cerrado
             turnoCaja.setEstado(EstadoTurnoEnum.CERRADO);
             turnoCaja.setFinTurno(turnoCajaDTO.getFinTurno());
+
             turnosCajaRepository.save(turnoCaja);
 
             return turnoCajaMapper.toDTO(turnoCaja);

@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 @Schema(description = "DTO para representar las denominaciones de billetes")
 public class DenominacionDTO {
 
+    @Schema(description = "ID se genera auntomaticamente", example = "5fdf9c4b5f5b5f5b5f5b5f5b")
+    private String id; 
+
     @Schema(description = "Denominación del billete", example = "1 dólar")
     private String billete;
 

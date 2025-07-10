@@ -14,6 +14,9 @@ import java.util.List;
 @Schema(description = "DTO para la gestión de turnos de caja")
 public class TurnoCajaDTO {
 
+    @Schema(description = "ID  genera auntomaticamente", example = "5fdf9c4b5f5b5f5b5f5b5f5b")
+    private String id; 
+
     @Schema(description = "ID generado automáticamente", accessMode = Schema.AccessMode.READ_ONLY, example = "CAJ01-USU01-20250709")
     private String codigoTurno;
 
