@@ -38,11 +38,9 @@ public class TurnoCajaService {
         this.transaccionesTurnoMapper = transaccionesTurnoMapper;
     }
 
-    // --------- Iniciar turno ---------
     @Transactional
     public TurnoCajaDTO iniciarTurno(TurnoCajaDTO turnoCajaDTO) {
         try {
-            // Crear el turno
             TurnosCaja turnoCaja = turnoCajaMapper.toModel(turnoCajaDTO);
             turnoCaja.setEstado(EstadoTurnoEnum.ABIERTO);
             TurnosCaja turnoCreado = turnosCajaRepository.save(turnoCaja);
@@ -52,11 +50,9 @@ public class TurnoCajaService {
         }
     }
 
-    // --------- Procesar transacción ---------
     @Transactional
     public TransaccionesTurnoDTO procesarTransaccion(TransaccionesTurnoDTO transaccionesTurnoDTO) {
         try {
-            // Crear la transacción
             TransaccionesTurno transaccion = transaccionesTurnoMapper.toModel(transaccionesTurnoDTO);
             transaccionesTurnoRepository.save(transaccion);
             return transaccionesTurnoMapper.toDTO(transaccion);
@@ -66,11 +62,10 @@ public class TurnoCajaService {
         }
     }
 
-    // --------- Cerrar turno ---------
     @Transactional
     public TurnoCajaDTO cerrarTurno(String codigoTurno, TurnoCajaDTO turnoCajaDTO) {
         try {
-            TurnosCaja turnoCaja = turnosCajaRepository.findById(codigoTurno)
+            TurnosCaja turnoCaja = turnosCajaRepository.findByCodigoTurno(codigoTurno)
                     .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con código=" + codigoTurno));
 
             List<TransaccionesTurno> transacciones = transaccionesTurnoRepository.findByCodigoTurno(codigoTurno);
