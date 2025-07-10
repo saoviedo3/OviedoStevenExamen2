@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.examen.banquito.dto.TurnoCajaDTO;
 import com.examen.banquito.dto.TransaccionesTurnoDTO;
 import com.examen.banquito.enums.EstadoTurnoEnum;
+import com.examen.banquito.enums.TipoTransaccionEnum;
 import com.examen.banquito.exception.CreateEntityException;
 import com.examen.banquito.exception.ResourceNotFoundException;
 import com.examen.banquito.exception.UpdateEntityException;
@@ -55,6 +56,18 @@ public class TurnoCajaService {
         try {
             TransaccionesTurno transaccion = transaccionesTurnoMapper.toModel(transaccionesTurnoDTO);
             transaccionesTurnoRepository.save(transaccion);
+
+            TurnosCaja turnoCaja = turnosCajaRepository.findByCodigoTurno(transaccion.getCodigoTurno())
+                    .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con código=" + transaccion.getCodigoTurno()));
+
+            if (transaccion.getTipoTransaccion() == TipoTransaccionEnum.DEPOSITO) {
+                turnoCaja.setMontoInicial(turnoCaja.getMontoInicial().add(transaccion.getMontoTotal()));
+            } else if (transaccion.getTipoTransaccion() == TipoTransaccionEnum.RETIRO) {
+                turnoCaja.setMontoInicial(turnoCaja.getMontoInicial().subtract(transaccion.getMontoTotal()));
+            }
+
+            turnosCajaRepository.save(turnoCaja);
+
             return transaccionesTurnoMapper.toDTO(transaccion);
         } catch (Exception e) {
             throw new CreateEntityException("TransaccionesTurno",
@@ -69,7 +82,6 @@ public class TurnoCajaService {
                     .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con código=" + codigoTurno));
 
             List<TransaccionesTurno> transacciones = transaccionesTurnoRepository.findByCodigoTurno(codigoTurno);
-
             BigDecimal montoTotalTransacciones = transacciones.stream()
                     .map(TransaccionesTurno::getMontoTotal)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);

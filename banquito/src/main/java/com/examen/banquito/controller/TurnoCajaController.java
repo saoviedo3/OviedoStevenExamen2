@@ -20,21 +20,18 @@ public class TurnoCajaController {
         this.turnoCajaService = turnoCajaService;
     }
 
-    // --------- Iniciar turno ---------
     @Operation(summary = "Iniciar un turno", description = "Crea un nuevo turno y lo marca como ABIERTO")
     @PostMapping("/iniciar")
     public ResponseEntity<TurnoCajaDTO> iniciarTurno(@Valid @RequestBody TurnoCajaDTO turnoCajaDTO) {
         return ResponseEntity.ok(turnoCajaService.iniciarTurno(turnoCajaDTO));
     }
 
-    // --------- Procesar transacción ---------
     @Operation(summary = "Procesar transacción", description = "Registra una transacción de retiro o depósito")
     @PostMapping("/transacciones")
     public ResponseEntity<TransaccionesTurnoDTO> procesarTransaccion(@Valid @RequestBody TransaccionesTurnoDTO transaccionesTurnoDTO) {
         return ResponseEntity.ok(turnoCajaService.procesarTransaccion(transaccionesTurnoDTO));
     }
 
-    // --------- Cerrar turno ---------
     @Operation(summary = "Cerrar turno", description = "Finaliza un turno, verificando las transacciones y el monto final")
     @PutMapping("/cerrar/{codigoTurno}")
     public ResponseEntity<TurnoCajaDTO> cerrarTurno(@PathVariable String codigoTurno, @Valid @RequestBody TurnoCajaDTO turnoCajaDTO) {

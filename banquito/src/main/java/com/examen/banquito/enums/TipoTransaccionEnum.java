@@ -4,5 +4,6 @@ public enum TipoTransaccionEnum {
     INICIO,
     AHORRO,
     DEPOSITO,
+    RETIRO,
     CIERRE
 }
