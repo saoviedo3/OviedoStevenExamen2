@@ -1,9 +1,7 @@
 package com.examen.banquito.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.examen.banquito.enums.TipoTransaccionEnum;
-
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,15 +16,7 @@ public class TransaccionesTurno {
     private String codigoCaja;
     private String codigoCajero;
     private String codigoTurno;
-    private TipoTransaccionEnum tipoTransaccion; 
+    private TipoTransaccionEnum tipoTransaccion;
     private BigDecimal montoTotal;
-    private List<Denominacion> denominaciones; 
-
-    @Getter
-    @Setter
-    public static class Denominacion {
-        private String billete; 
-        private Integer cantidadBilletes;
-        private BigDecimal monto;
-    }
+    private List<Denominacion> denominaciones;
 }

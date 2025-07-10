@@ -1,14 +1,12 @@
 package com.examen.banquito.model;
+import com.examen.banquito.enums.EstadoTurnoEnum;
+import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.examen.banquito.enums.EstadoTurnoEnum;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,7 +20,6 @@ public class TurnosCaja {
     private BigDecimal montoInicial;
     private LocalDateTime finTurno;
     private EstadoTurnoEnum estado;
-
-    
+    private List<Denominacion> denominaciones;
 
 }
